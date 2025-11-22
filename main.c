@@ -4,17 +4,16 @@
 #include <string.h>
 
 int main(int argc, char *argv[]) {
-  char source[] = "This is a string";
-  size_t length = strlen(source);
+  char source[] = "This is source.";
+  char destination[50] = "This is destination.";
+  char substrcat[50] = "This is substr.";
 
-  char destination[length];
-  char substrcpy[11];
+  strcat(destination, source);
+  strncat(substrcat, source, 4);
 
-  strcpy(destination, source);
-  strncpy(substrcpy, source, 10);
-
-  printf("SOURCE: %s\nDESTINATION: %s\n", source, destination);
-  printf("\n%s\n", substrcpy);
+  printf("%s\n", destination);
+  printf("%s\n", substrcat);
+  // Output: This is destination. This is source
 
   return EXIT_SUCCESS;
 }

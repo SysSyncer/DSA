@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
 int main(int argc, char *argv[]) {
-  int idx = 1;
-  while (idx < argc && argv[idx] != (void *)0) {
-    printf("%s\t", argv[idx++]);
-  }
-  printf("\n");
+  char source[] = "This is a string";
+  char destination[strlen(source)];
+  strcpy(destination, source);
+  printf("SOURCE: %s\nDESTINATION: %s\n", source, destination);
   return EXIT_SUCCESS;
 }

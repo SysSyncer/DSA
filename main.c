@@ -3,9 +3,20 @@
 #include <string.h>
 
 int main(int argc, char *argv[]) {
-  char str[] = "Hello World | This is a Trap";
-  printf("%s\n", strchr(str, 'a'));  // a Trap
-  printf("%s\n", strrchr(str, 'a')); // ap
+  char path[] = "/home/user/documents/report.txt";
+  char delimiters[] = "/";
+
+  char *token = strtok(path, delimiters);
+  while (token != NULL) {
+    printf("%s\n", token);
+    token = strtok(NULL, delimiters);
+  }
+
+  // Output:
+  // home
+  // user
+  // documents
+  // report.txt
 
   return EXIT_SUCCESS;
 }

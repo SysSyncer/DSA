@@ -1281,21 +1281,20 @@ public class Main {
 
     // [a, b] a - appearing more than once, b - missing number
     private static int[] findMissingRepeatingNumbers(int[] nums) {
-        int n = nums.length;
-        int missingElement = -1;
-        int duplicateElement = -1;
-        int[] hash = new int[n + 1];
-        for (int num : nums) {
-            if (hash[num] != 0) duplicateElement = num;
-            hash[num]++;
+        long n = nums.length;
+        long s = 0,
+            s2 = 0;
+        long sn = (n * (n + 1)) / 2,
+            s2n = (n * (n + 1) * (2 * n + 1)) / 6;
+        for (long num : nums) {
+            s += num;
+            s2 += num * num;
         }
-        for (int i = 1; i <= n; i++) {
-            if (hash[i] == 0) {
-                missingElement = i;
-                break;
-            }
-        }
-        return new int[] { duplicateElement, missingElement };
+        long xMinusY = s - sn;
+        long xPlusY = (s2 - s2n) / xMinusY;
+        long repeatingNumber = (xPlusY + xMinusY) / 2;
+        long missingNumber = repeatingNumber - xMinusY;
+        return new int[] { (int) repeatingNumber, (int) missingNumber };
     }
 
     public static void main(String[] args) {

@@ -1281,20 +1281,32 @@ public class Main {
 
     // [a, b] a - appearing more than once, b - missing number
     private static int[] findMissingRepeatingNumbers(int[] nums) {
-        long n = nums.length;
-        long s = 0,
-            s2 = 0;
-        long sn = (n * (n + 1)) / 2,
-            s2n = (n * (n + 1) * (2 * n + 1)) / 6;
-        for (long num : nums) {
-            s += num;
-            s2 += num * num;
+        int n = nums.length;
+        int xor = 0;
+        for (int i = 0; i < n; i++) {
+            xor = xor ^ nums[i];
+            xor = xor ^ (i + 1);
         }
-        long xMinusY = s - sn;
-        long xPlusY = (s2 - s2n) / xMinusY;
-        long repeatingNumber = (xPlusY + xMinusY) / 2;
-        long missingNumber = repeatingNumber - xMinusY;
-        return new int[] { (int) repeatingNumber, (int) missingNumber };
+        int differentiatingBit = 0;
+        // while (true) {
+        //     if ((xor & (1 << differentiatingBit)) != 0) break;
+        //     differentiatingBit++;
+        // }
+        differentiatingBit = xor & ~(xor - 1);
+        int zero = 0,
+            one = 0;
+        for (int num : nums) {
+            if ((num & (1 << differentiatingBit)) != 0) one = one ^ num;
+            else zero = zero ^ num;
+        }
+        for (int i = 1; i <= n; i++) {
+            if ((i & (1 << differentiatingBit)) != 0) one = one ^ i;
+            else zero = zero ^ i;
+        }
+        int count = 0;
+        for (int num : nums) if (num == zero) count++;
+        if (count == 0) return new int[] { one, zero };
+        return new int[] { zero, one };
     }
 
     public static void main(String[] args) {

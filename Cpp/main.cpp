@@ -37,19 +37,50 @@ using namespace std;
 //   return ans;
 // }
 
+// vector<int> findRepeatingMissingNumbers(vector<int> arr) {
+//   long n = arr.size();
+//   long s = 0, s2 = 0;
+//   long sn = (n * (n + 1)) / 2, s2n = (n * (n + 1) * (2 * n + 1)) / 6;
+//   for (long it : arr) {
+//     s += it;
+//     s2 += it * it;
+//   }
+//   long x_minus_y = s - sn;
+//   long x_plus_y = (s2 - s2n) / x_minus_y;
+//   long x = (x_plus_y + x_minus_y) / 2; // repeating number
+//   long y = x - x_minus_y;              // missing number
+//   return vector<int>{(int)x, (int)y};
+// }
+
+// Optimal Approach - 2 | Bit Manipulation Method
 vector<int> findRepeatingMissingNumbers(vector<int> arr) {
-  long n = arr.size();
-  long s = 0, s2 = 0;
-  long sn = (n * (n + 1)) / 2, s2n = (n * (n + 1) * (2 * n + 1)) / 6;
-  for (long it : arr) {
-    s += it;
-    s2 += it * it;
+  int n = arr.size();
+  int xr = 0;
+  for (int i = 0; i < n; i++) {
+    xr = xr ^ arr[i];
+    xr = xr ^ (i + 1);
   }
-  long x_minus_y = s - sn;
-  long x_plus_y = (s2 - s2n) / x_minus_y;
-  long x = (x_plus_y + x_minus_y) / 2; // repeating number
-  long y = x - x_minus_y;              // missing number
-  return vector<int>{(int)x, (int)y};
+  int diff_bit = xr & ~(xr - 1);
+  int x = 0, y = 0;
+  for (int i = 0; i < n; i++) {
+    if (arr[i] & diff_bit)
+      x = x ^ arr[i];
+    else
+      y = y ^ arr[i];
+    if ((i + 1) & diff_bit)
+      x = x ^ (i + 1);
+    else
+      y = y ^ (i + 1);
+  }
+
+  int count = 0;
+  for (int num : arr) {
+    if (num == x)
+      count++;
+  }
+  if (count == 2)
+    return vector<int>{x, y};
+  return vector<int>{y, x};
 }
 
 int main() {

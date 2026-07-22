@@ -1,5 +1,4 @@
 #include "iostream"
-#include <cstddef>
 #include <vector>
 using namespace std;
 
@@ -83,4 +82,59 @@ using namespace std;
 //   return vector<int>{y, x};
 // }
 
-int main() {}
+long long merge(vector<int> arr, int low, int mid, int high) {
+  long long inverseCount = 0;
+  int left = low;
+  int right = mid + 1;
+  vector<int> temp;
+
+  while (left <= mid && right <= high) {
+    if (arr[left] <= arr[right]) {
+      temp.push_back(arr[left]);
+      left++;
+    } else {
+      temp.push_back(arr[right]);
+      inverseCount += (mid - low + 1);
+      right++;
+    }
+  }
+
+  while (left <= mid) {
+    temp.push_back(arr[left]);
+    left++;
+  }
+  while (right <= high) {
+    temp.push_back(arr[right]);
+    right++;
+  }
+
+  for (int i = low; i < high; i++) {
+    arr[i] = temp[i - low];
+  }
+
+  return inverseCount;
+}
+
+long long mergeSortHelper(vector<int> arr, int low, int high) {
+  long long inverseCount = 0;
+  if (low >= high)
+    return inverseCount;
+  int mid = (low + high) / 2;
+  inverseCount += mergeSortHelper(arr, low, mid);
+  inverseCount += mergeSortHelper(arr, mid + 1, high);
+  inverseCount += merge(arr, low, mid, high);
+  return inverseCount;
+}
+
+long long mergeSort(vector<int> arr) {
+  int low = 0;
+  int high = arr.size() - 1;
+  return mergeSortHelper(arr, low, high);
+}
+
+long long numberOfInversions(vector<int> arr) { return mergeSort(arr); }
+
+int main() {
+  vector<int> arr = {9, 5, 4, 2};
+  cout << numberOfInversions(arr) << endl;
+}

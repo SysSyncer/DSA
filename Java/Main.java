@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main {
 
     // private static Integer sumAll(List<Integer> array) {
@@ -1309,15 +1312,53 @@ public class Main {
     //     return new int[] { zero, one };
     // }
 
-    private static long numberOfInversions(int[] nums) {
-        long inversionsCount = 0;
-        int n = nums.length;
-        for (int i = n - 1; i >= 0; i--) {
-            for (int j = 0; j < i; j++) {
-                if (nums[j] > nums[i]) inversionsCount++;
+    private static long merge(int[] nums, int low, int mid, int high) {
+        long inverseCount = 0;
+        int left = low;
+        int right = mid + 1;
+        List<Integer> temp = new ArrayList<>();
+        while (left <= mid && right <= high) {
+            if (nums[left] <= nums[right]) {
+                temp.add(nums[left]);
+                left++;
+            } else {
+                temp.add(nums[right]);
+                inverseCount += mid - left + 1;
+                right++;
             }
         }
-        return inversionsCount;
+        while (left <= mid) {
+            temp.add(nums[left]);
+            left++;
+        }
+        while (right <= high) {
+            temp.add(nums[right]);
+            right++;
+        }
+        for (int i = low; i <= high; i++) {
+            nums[i] = temp.get(i - low);
+        }
+        return inverseCount;
+    }
+
+    private static long mergeSortHelper(int[] nums, int low, int high) {
+        long inverseCount = 0;
+        if (low >= high) return inverseCount;
+        int mid = (low + high) / 2;
+        inverseCount += mergeSortHelper(nums, low, mid);
+        inverseCount += mergeSortHelper(nums, mid + 1, high);
+        inverseCount += merge(nums, low, mid, high);
+        return inverseCount;
+    }
+
+    private static long mergeSort(int[] nums) {
+        int low = 0;
+        int high = nums.length - 1;
+        return mergeSortHelper(nums, low, high);
+    }
+
+    private static long numberOfInversions(int[] nums) {
+        return mergeSort(nums);
     }
 
     public static void main(String[] args) {

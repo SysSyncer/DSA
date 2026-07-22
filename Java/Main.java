@@ -1280,41 +1280,48 @@ public class Main {
     // }
 
     // [a, b] a - appearing more than once, b - missing number
-    private static int[] findMissingRepeatingNumbers(int[] nums) {
+    // private static int[] findMissingRepeatingNumbers(int[] nums) {
+    //     int n = nums.length;
+    //     int xor = 0;
+    //     for (int i = 0; i < n; i++) {
+    //         xor = xor ^ nums[i];
+    //         xor = xor ^ (i + 1);
+    //     }
+    //     int differentiatingBit = 0;
+    //     // while (true) {
+    //     //     if ((xor & (1 << differentiatingBit)) != 0) break;
+    //     //     differentiatingBit++;
+    //     // }
+    //     differentiatingBit = xor & ~(xor - 1);
+    //     int zero = 0,
+    //         one = 0;
+    //     for (int num : nums) {
+    //         if ((num & (1 << differentiatingBit)) != 0) one = one ^ num;
+    //         else zero = zero ^ num;
+    //     }
+    //     for (int i = 1; i <= n; i++) {
+    //         if ((i & (1 << differentiatingBit)) != 0) one = one ^ i;
+    //         else zero = zero ^ i;
+    //     }
+    //     int count = 0;
+    //     for (int num : nums) if (num == zero) count++;
+    //     if (count == 0) return new int[] { one, zero };
+    //     return new int[] { zero, one };
+    // }
+
+    private static long numberOfInversions(int[] nums) {
+        long inversionsCount = 0;
         int n = nums.length;
-        int xor = 0;
-        for (int i = 0; i < n; i++) {
-            xor = xor ^ nums[i];
-            xor = xor ^ (i + 1);
+        for (int i = n - 1; i >= 0; i--) {
+            for (int j = 0; j < i; j++) {
+                if (nums[j] > nums[i]) inversionsCount++;
+            }
         }
-        int differentiatingBit = 0;
-        // while (true) {
-        //     if ((xor & (1 << differentiatingBit)) != 0) break;
-        //     differentiatingBit++;
-        // }
-        differentiatingBit = xor & ~(xor - 1);
-        int zero = 0,
-            one = 0;
-        for (int num : nums) {
-            if ((num & (1 << differentiatingBit)) != 0) one = one ^ num;
-            else zero = zero ^ num;
-        }
-        for (int i = 1; i <= n; i++) {
-            if ((i & (1 << differentiatingBit)) != 0) one = one ^ i;
-            else zero = zero ^ i;
-        }
-        int count = 0;
-        for (int num : nums) if (num == zero) count++;
-        if (count == 0) return new int[] { one, zero };
-        return new int[] { zero, one };
+        return inversionsCount;
     }
 
     public static void main(String[] args) {
-        int[] nums = new int[] { 1, 2, 4, 3, 2 };
-        int[] elements = findMissingRepeatingNumbers(nums);
-        for (int num : elements) {
-            System.out.printf("%d ", num);
-        }
-        System.out.println();
+        int[] nums = new int[] { 9, 5, 4, 2 };
+        System.out.println(numberOfInversions(nums));
     }
 }

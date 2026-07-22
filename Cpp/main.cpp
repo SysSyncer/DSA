@@ -53,39 +53,34 @@ using namespace std;
 // }
 
 // Optimal Approach - 2 | Bit Manipulation Method
-vector<int> findRepeatingMissingNumbers(vector<int> arr) {
-  int n = arr.size();
-  int xr = 0;
-  for (int i = 0; i < n; i++) {
-    xr = xr ^ arr[i];
-    xr = xr ^ (i + 1);
-  }
-  int diff_bit = xr & ~(xr - 1);
-  int x = 0, y = 0;
-  for (int i = 0; i < n; i++) {
-    if (arr[i] & diff_bit)
-      x = x ^ arr[i];
-    else
-      y = y ^ arr[i];
-    if ((i + 1) & diff_bit)
-      x = x ^ (i + 1);
-    else
-      y = y ^ (i + 1);
-  }
+// vector<int> findRepeatingMissingNumbers(vector<int> arr) {
+//   int n = arr.size();
+//   int xr = 0;
+//   for (int i = 0; i < n; i++) {
+//     xr = xr ^ arr[i];
+//     xr = xr ^ (i + 1);
+//   }
+//   int diff_bit = xr & ~(xr - 1);
+//   int x = 0, y = 0;
+//   for (int i = 0; i < n; i++) {
+//     if (arr[i] & diff_bit)
+//       x = x ^ arr[i];
+//     else
+//       y = y ^ arr[i];
+//     if ((i + 1) & diff_bit)
+//       x = x ^ (i + 1);
+//     else
+//       y = y ^ (i + 1);
+//   }
 
-  int count = 0;
-  for (int num : arr) {
-    if (num == x)
-      count++;
-  }
-  if (count == 2)
-    return vector<int>{x, y};
-  return vector<int>{y, x};
-}
+//   int count = 0;
+//   for (int num : arr) {
+//     if (num == x)
+//       count++;
+//   }
+//   if (count == 2)
+//     return vector<int>{x, y};
+//   return vector<int>{y, x};
+// }
 
-int main() {
-  vector<int> arr = {1, 3, 2, 2, 4};
-  vector<int> ans = findRepeatingMissingNumbers(arr);
-  cout << "[" << ans[0] << "," << ans[1] << "]" << endl;
-  return 0;
-}
+int main() {}

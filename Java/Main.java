@@ -1,6 +1,3 @@
-import java.util.ArrayList;
-import java.util.List;
-
 public class Main {
 
     // private static Integer sumAll(List<Integer> array) {
@@ -1375,64 +1372,71 @@ public class Main {
 
     // Reverse Pair - Optimal Approach T(n * log n + n) - S(n)
     // T(merge sort (n * log n) : reverse pair counter (near about n))
-    private static void merge(int[] nums, int low, int mid, int high) {
-        int left = low;
-        int right = mid + 1;
-        List<Integer> temp = new ArrayList<>();
-        while (left <= mid && right <= high) {
-            if (nums[left] <= nums[right]) temp.add(nums[left++]);
-            else temp.add(nums[right++]);
-        }
-        while (left <= mid) temp.add(nums[left++]);
-        while (right <= high) temp.add(nums[right++]);
-        for (int i = low; i <= high; i++) {
-            nums[i] = temp.get(i - low);
-        }
-    }
+    // private static void merge(int[] nums, int low, int mid, int high) {
+    //     int left = low;
+    //     int right = mid + 1;
+    //     List<Integer> temp = new ArrayList<>();
+    //     while (left <= mid && right <= high) {
+    //         if (nums[left] <= nums[right]) temp.add(nums[left++]);
+    //         else temp.add(nums[right++]);
+    //     }
+    //     while (left <= mid) temp.add(nums[left++]);
+    //     while (right <= high) temp.add(nums[right++]);
+    //     for (int i = low; i <= high; i++) {
+    //         nums[i] = temp.get(i - low);
+    //     }
+    // }
 
-    private static int countReversePairs(
-        int[] nums,
-        int low,
-        int mid,
-        int high
-    ) {
-        int count = 0;
-        int right = mid + 1;
-        for (int i = low; i <= mid; i++) {
-            while (right <= high && nums[i] > 2 * nums[right]) right++;
-            count += right - (mid + 1);
-        }
-        return count;
-    }
+    // private static int countReversePairs(
+    //     int[] nums,
+    //     int low,
+    //     int mid,
+    //     int high
+    // ) {
+    //     int count = 0;
+    //     int right = mid + 1;
+    //     for (int i = low; i <= mid; i++) {
+    //         while (right <= high && nums[i] > 2 * nums[right]) right++;
+    //         count += right - (mid + 1);
+    //     }
+    //     return count;
+    // }
 
-    private static int mergeSortHelper(int[] nums, int low, int high) {
-        if (low >= high) return 0;
-        int mid = (low + high) / 2;
-        int count = 0;
-        count += mergeSortHelper(nums, low, mid);
-        count += mergeSortHelper(nums, mid + 1, high);
-        count += countReversePairs(nums, low, mid, high);
-        merge(nums, low, mid, high);
-        return count;
-    }
+    // private static int mergeSortHelper(int[] nums, int low, int high) {
+    //     if (low >= high) return 0;
+    //     int mid = (low + high) / 2;
+    //     int count = 0;
+    //     count += mergeSortHelper(nums, low, mid);
+    //     count += mergeSortHelper(nums, mid + 1, high);
+    //     count += countReversePairs(nums, low, mid, high);
+    //     merge(nums, low, mid, high);
+    //     return count;
+    // }
 
-    private static int mergeSort(int[] nums) {
-        int low = 0;
-        int high = nums.length - 1;
-        int count = 0;
-        count = mergeSortHelper(nums, low, high);
-        return count;
-    }
+    // private static int mergeSort(int[] nums) {
+    //     int low = 0;
+    //     int high = nums.length - 1;
+    //     int count = 0;
+    //     count = mergeSortHelper(nums, low, high);
+    //     return count;
+    // }
 
-    private static int reversePairs(int[] nums) {
-        int count = 0;
-        count = mergeSort(nums);
-        return count;
-    }
+    // private static int reversePairs(int[] nums) {
+    //     int count = 0;
+    //     count = mergeSort(nums);
+    //     return count;
+    // }
+
+    // private static void swap(int[] nums, int i, int j) {
+    //     int temp = nums[i];
+    //     nums[i] = nums[j];
+    //     nums[j] = temp;
+    // }
 
     public static void main(String[] args) {
-        int[] nums = new int[] { 6, 4, 1, 2, 7 };
-        int count = reversePairs(nums);
-        System.out.printf("%d\n", count);
+        int[] nums = new int[] { 6, 5, 4, 2, 1, 3 };
+        for (int num : nums) {
+            System.out.printf("%d ", num);
+        }
     }
 }

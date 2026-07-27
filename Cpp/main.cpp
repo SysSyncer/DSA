@@ -1,6 +1,8 @@
 #include "iostream"
 #include <algorithm>
+#include <climits>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 using namespace std;
 
@@ -474,7 +476,7 @@ void printMatrix(vector<vector<int>> matrix) {
   }
 }
 
-// T(n) S(n)
+// Optimal Approach T(n) S(n)
 vector<int> twoSum(vector<int> arr, int target) {
   vector<int> ans = {-1, -1};
   unordered_map<int, int> map;
@@ -489,6 +491,7 @@ vector<int> twoSum(vector<int> arr, int target) {
   return ans;
 }
 
+// Optimal Approach T(n^2) S(1)
 vector<vector<int>> threeSum(vector<int> arr, int target) {
   vector<vector<int>> ans;
   int n = arr.size();
@@ -518,15 +521,259 @@ vector<vector<int>> threeSum(vector<int> arr, int target) {
   return ans;
 }
 
-int main() {
-  vector<int> arr = {2, -2, 0, 3, -3, 5};
-  vector<vector<int>> ans = threeSum(arr, 0);
-  for (vector<int> values : ans) {
-    cout << "[ ";
-    for (int num : values) {
-      cout << num << " ";
+// Optimal Approach T(n^2) S(1)
+vector<vector<int>> fourSum(vector<int> arr, int target) {
+  int n = arr.size();
+  sort(arr.begin(), arr.end());
+  vector<vector<int>> ans;
+  for (int i = 0; i < n - 3; i++) {
+    if (i > 0 && arr[i - 1] == arr[i])
+      continue;
+    for (int j = i + 1; j < n - 2; j++) {
+      if (j > 1 && arr[j - 1] == arr[j])
+        continue;
+      int k = j + 1;
+      int l = n - 1;
+      while (k < l) {
+        int sum = arr[i] + arr[j] + arr[k] + arr[l];
+        if (target - sum > 0)
+          k++;
+        else if (target - sum < 0)
+          l--;
+        else {
+          ans.push_back({arr[i], arr[j], arr[k], arr[l]});
+          k++;
+          l--;
+          while (k < l && arr[k - 1] == arr[k])
+            k++;
+          while (k < l && arr[l + 1] == arr[l])
+            l--;
+        }
+      }
     }
-    cout << "] ";
   }
+  return ans;
+}
+
+// Kadane's Algorithm - Maximum Subarry Problem [Optimal Approach T(n) S(1)]
+int maxSubArray(vector<int> arr) {
+  int n = arr.size();
+  long long maxSum = LLONG_MIN;
+  int recSum = 0;
+  for (int i = 0; i < n; i++) {
+    recSum += arr[i];
+    if (recSum > maxSum)
+      maxSum = recSum;
+    if (recSum < 0)
+      recSum = 0;
+  }
+  return (int)maxSum;
+}
+
+// Optimal Approach T(n) S(1)
+void nextPermutation(vector<int> &arr) {
+  int n = arr.size();
+  int idx = -1;
+  for (int i = n - 1; i >= 0; i--) {
+    if (i == 0) {
+      reverse(arr.begin(), arr.end());
+      return;
+    }
+    if (arr[i - 1] < arr[i]) {
+      idx = i;
+      break;
+    }
+  }
+  sort(arr.begin() + idx, arr.end());
+  for (int i = idx; i < n; i++) {
+    if (arr[i] > arr[idx - 1]) {
+      swap(arr[i], arr[idx - 1]);
+      break;
+    }
+  }
+}
+
+// Majority Element - II [Optimal Approach T(n) S(1)]
+vector<int> majorityElementII(vector<int> arr) {
+  int n = arr.size();
+  int one = -1, two = -1;
+  int count_one = 0, count_two = 0;
+  vector<int> ans;
+  for (int num : arr) {
+    if (count_one == 0) {
+      one = num;
+      count_one++;
+    } else if (count_two == 0) {
+      two = num;
+      count_two++;
+    } else if (num == one)
+      count_one++;
+    else if (num == two)
+      count_two++;
+    else {
+      count_one--;
+      count_two--;
+    }
+  }
+  int co = 0, ct = 0;
+  for (int num : arr) {
+    if (one == num)
+      co++;
+    if (two == num)
+      ct++;
+  }
+
+  if (co > n / 3)
+    ans.push_back(one);
+  if (ct > n / 3)
+    ans.push_back(two);
+  return ans;
+}
+
+// Find the missing and repeating number [Optimal Approach T(n) S(1)]
+vector<int> findMissingAndRepeatingNumbers(vector<int> arr) {
+  int n = arr.size();
+  int xr = 0;
+  for (int i = 0; i < n; i++) {
+    xr = xr ^ arr[i];
+    xr = xr ^ (i + 1);
+  }
+  int diff_bit = xr & ~(xr - 1);
+  int one = 0, zero = 0;
+  for (int num : arr) {
+    if (num & diff_bit)
+      one ^= num;
+    else
+      zero ^= num;
+  }
+  for (int i = 1; i <= n; i++) {
+    if (i & diff_bit)
+      one ^= i;
+    else
+      zero ^= i;
+  }
+  int count = 0;
+  for (int num : arr) {
+    if (one == num)
+      count++;
+  }
+  if (count == 0)
+    return {zero, one};
+  return {one, zero};
+}
+
+// Number of Inversions [Optimal Approach T(nlogn) S(n)]
+// long merge(vector<int> arr, int low, int mid, int high) {
+//   int left = low;
+//   int right = mid + 1;
+//   long count = 0;
+//   vector<int> temp;
+//   while (left <= mid && right <= high) {
+//     if (arr[left] <= arr[right])
+//       temp.push_back(arr[left++]);
+//     else {
+//       count += (mid - left + 1);
+//       temp.push_back(arr[right++]);
+//     }
+//   }
+//   while (left <= mid)
+//     temp.push_back(arr[left++]);
+//   while (right <= high)
+//     temp.push_back(arr[right++]);
+
+//   for (int i = low; i <= high; i++) {
+//     arr[i] = temp[i - low];
+//   }
+//   return count;
+// }
+
+// long mergeSortHelper(vector<int> arr, int low, int high) {
+//   if (low >= high)
+//     return 0;
+//   int mid = (low + high) / 2;
+//   long count = 0;
+//   count += mergeSortHelper(arr, low, mid);
+//   count += mergeSortHelper(arr, mid + 1, high);
+//   count += merge(arr, low, mid, high);
+//   return count;
+// }
+
+// long mergeSort(vector<int> arr) {
+//   int low = 0;
+//   int high = arr.size() - 1;
+//   long count = 0;
+//   count = mergeSortHelper(arr, low, high);
+//   return count;
+// }
+
+// long numberOfInversions(vector<int> arr) {
+//   long count = 0;
+//   count = mergeSort(arr);
+//   return count;
+// }
+
+// Number of reverse pairs T(nlogn) S(n)
+
+void merge(vector<int> &arr, int low, int mid, int high) {
+  int left = low;
+  int right = mid + 1;
+  vector<int> temp;
+  while (left <= mid && right <= high) {
+    if (arr[left] <= arr[right])
+      temp.push_back(arr[left++]);
+    else
+      temp.push_back(arr[right++]);
+  }
+  while (left <= mid)
+    temp.push_back(arr[left++]);
+  while (right <= high)
+    temp.push_back(arr[right++]);
+  for (int i = low; i <= high; i++) {
+    arr[i] = temp[i - low];
+  }
+}
+
+int countReversePair(vector<int> arr, int low, int mid, int high) {
+  int right = mid + 1;
+  int count = 0;
+  for (int i = low; i <= mid; i++) {
+    while (right <= high && arr[i] > 2 * arr[right])
+      right++;
+    count += (right - (mid + 1));
+  }
+  return count;
+}
+
+int mergeSortHelper(vector<int> &arr, int low, int high) {
+  if (low >= high)
+    return 0;
+  int mid = (low + high) / 2;
+  int count = 0;
+  count += mergeSortHelper(arr, low, mid);
+  count += mergeSortHelper(arr, mid + 1, high);
+  count += countReversePair(arr, low, mid, high);
+  merge(arr, low, mid, high);
+  return count;
+}
+
+int mergeSort(vector<int> arr) {
+  int low = 0;
+  int high = arr.size() - 1;
+  int count = 0;
+  count = mergeSortHelper(arr, low, high);
+  return count;
+}
+
+int numberOfReversePairs(vector<int> arr) {
+  int count = 0;
+  count = mergeSort(arr);
+  return count;
+}
+
+
+int main() {
+  vector<int> arr = {6, 4, 1, 2, 7};
+  int ans = numberOfReversePairs(arr);
+  cout << ans << endl;
   return 0;
 }

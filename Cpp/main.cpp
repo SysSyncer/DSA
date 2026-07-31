@@ -714,66 +714,120 @@ vector<int> findMissingAndRepeatingNumbers(vector<int> arr) {
 
 // Number of reverse pairs T(nlogn) S(n)
 
-void merge(vector<int> &arr, int low, int mid, int high) {
-  int left = low;
-  int right = mid + 1;
-  vector<int> temp;
-  while (left <= mid && right <= high) {
-    if (arr[left] <= arr[right])
-      temp.push_back(arr[left++]);
-    else
-      temp.push_back(arr[right++]);
+// void merge(vector<int> &arr, int low, int mid, int high) {
+//   int left = low;
+//   int right = mid + 1;
+//   vector<int> temp;
+//   while (left <= mid && right <= high) {
+//     if (arr[left] <= arr[right])
+//       temp.push_back(arr[left++]);
+//     else
+//       temp.push_back(arr[right++]);
+//   }
+//   while (left <= mid)
+//     temp.push_back(arr[left++]);
+//   while (right <= high)
+//     temp.push_back(arr[right++]);
+//   for (int i = low; i <= high; i++) {
+//     arr[i] = temp[i - low];
+//   }
+// }
+
+// int countReversePair(vector<int> arr, int low, int mid, int high) {
+//   int right = mid + 1;
+//   int count = 0;
+//   for (int i = low; i <= mid; i++) {
+//     while (right <= high && arr[i] > 2 * arr[right])
+//       right++;
+//     count += (right - (mid + 1));
+//   }
+//   return count;
+// }
+
+// int mergeSortHelper(vector<int> &arr, int low, int high) {
+//   if (low >= high)
+//     return 0;
+//   int mid = (low + high) / 2;
+//   int count = 0;
+//   count += mergeSortHelper(arr, low, mid);
+//   count += mergeSortHelper(arr, mid + 1, high);
+//   count += countReversePair(arr, low, mid, high);
+//   merge(arr, low, mid, high);
+//   return count;
+// }
+
+// int mergeSort(vector<int> arr) {
+//   int low = 0;
+//   int high = arr.size() - 1;
+//   int count = 0;
+//   count = mergeSortHelper(arr, low, high);
+//   return count;
+// }
+
+// int numberOfReversePairs(vector<int> arr) {
+//   int count = 0;
+//   count = mergeSort(arr);
+//   return count;
+// }
+
+// Optimal Approach T(n)
+int maxProductSubarray(vector<int> arr) {
+  int n = arr.size();
+  int maximum = INT_MIN;
+  int prefix = 1;
+  int suffix = 1;
+  for (int i = 0; i < n; i++) {
+    if (prefix == 0)
+      prefix = 1;
+    if (suffix == 0)
+      suffix = 1;
+    prefix *= arr[i];
+    suffix *= arr[n - (i + 1)];
+    maximum = max(maximum, max(prefix, suffix));
   }
-  while (left <= mid)
-    temp.push_back(arr[left++]);
-  while (right <= high)
-    temp.push_back(arr[right++]);
-  for (int i = low; i <= high; i++) {
-    arr[i] = temp[i - low];
+  return maximum;
+}
+
+// Optimal Approach 1 - Gap Method | Shell Sort
+void swap_elements(int nums1[], int nums2[], int l, int r) {
+  if (nums1[l] > nums2[r])
+    swap(nums1[l], nums2[r]);
+}
+
+void merge(int nums1[], int m, int nums2[], int n) {
+  int len = (m + n);
+  int gap = (len / 2) + (len % 2);
+  while (gap > 0) {
+    int left = 0;
+    int right = left + gap;
+    while (right < len) {
+      // nums1 && nums2
+      if (left < m && right >= m)
+        swap_elements(nums1, nums2, left, right - m);
+      //  nums2 && nums2
+      else if (left >= m)
+        swap_elements(nums2, nums2, left - m, right - m);
+      // nums1 && nums1
+      else
+        swap_elements(nums1, nums1, left, right);
+      left++, right++;
+    }
+    if (gap == 1)
+      break;
+    gap = (gap / 2) + (gap % 2);
   }
 }
-
-int countReversePair(vector<int> arr, int low, int mid, int high) {
-  int right = mid + 1;
-  int count = 0;
-  for (int i = low; i <= mid; i++) {
-    while (right <= high && arr[i] > 2 * arr[right])
-      right++;
-    count += (right - (mid + 1));
-  }
-  return count;
-}
-
-int mergeSortHelper(vector<int> &arr, int low, int high) {
-  if (low >= high)
-    return 0;
-  int mid = (low + high) / 2;
-  int count = 0;
-  count += mergeSortHelper(arr, low, mid);
-  count += mergeSortHelper(arr, mid + 1, high);
-  count += countReversePair(arr, low, mid, high);
-  merge(arr, low, mid, high);
-  return count;
-}
-
-int mergeSort(vector<int> arr) {
-  int low = 0;
-  int high = arr.size() - 1;
-  int count = 0;
-  count = mergeSortHelper(arr, low, high);
-  return count;
-}
-
-int numberOfReversePairs(vector<int> arr) {
-  int count = 0;
-  count = mergeSort(arr);
-  return count;
-}
-
 
 int main() {
-  vector<int> arr = {6, 4, 1, 2, 7};
-  int ans = numberOfReversePairs(arr);
-  cout << ans << endl;
+  int nums1[] = {1, 3, 5};
+  int nums2[] = {2, 4, 6, 7};
+  int m = sizeof(nums1) / sizeof(nums1[0]);
+  int n = sizeof(nums2) / sizeof(nums2[0]);
+  merge(nums1, m, nums2, n);
+  for (int num : nums1)
+    cout << num << " ";
+  for (int num : nums2)
+    cout << num << " ";
+  cout << endl;
   return 0;
 }
